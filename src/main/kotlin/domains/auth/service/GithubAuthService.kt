@@ -1,9 +1,13 @@
 package org.bank.domains.auth.service
 
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.serializer
 import okhttp3.FormBody
 import org.bank.common.exception.CustomException
 import org.bank.common.exception.ErrorCode
 import org.bank.common.httpClient.CallClient
+import org.bank.common.json.JsonUtil
 import org.bank.config.OAuth2Config
 import org.bank.interfaces.OAuth2TokenResponse
 import org.bank.interfaces.OAuth2UserResponse
@@ -37,12 +41,46 @@ class GithubAuthService(
         val headers = mapOf("Accept" to "application/json")
         val jsonString = httpClient.POST(tokenURL, headers, body)
 
-        // jsonString -> json 처리
+        val response: GithubTokenResponse = JsonUtil.decodeFromJson(jsonString, GithubTokenResponse.serializer())
 
-        TODO("Not yet implemented")
+        return response;
     }
 
     override fun getUserInfo(accessToken: String): OAuth2UserResponse {
-        TODO("")
+        val headers = mapOf(
+            "Content-Type" to "application/json",
+            "Authorization" to "Bearer $accessToken"
+        )
+
+        val jsonString = httpClient.GET(userInfoURL, headers)
+
+        val response: GithubUseResponseTemp = JsonUtil.decodeFromJson(jsonString, GithubUseResponseTemp.serializer())
+
+        return response.toOAuth2UserResponse()
     }
 }
+
+@Serializable
+data class GithubTokenResponse(
+    @SerialName("sccess_token") override val accessToken: String,
+) : OAuth2TokenResponse
+
+@Serializable
+data class GithubUseResponseTemp(
+    val id: Int,
+    val repos_url: String,
+    val name: String,
+) {
+    fun toOAuth2UserResponse() = GithubUserResponse(
+        id = id.toString(),
+        email = repos_url,
+        name = name,
+    )
+}
+
+@Serializable
+data class GithubUserResponse(
+    override val id: String,
+    override val email: String?,
+    override val name: String?,
+) : OAuth2UserResponse

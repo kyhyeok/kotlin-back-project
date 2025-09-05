@@ -1,9 +1,13 @@
 package org.bank.domains.auth.service
 
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.serializer
 import okhttp3.FormBody
 import org.bank.common.exception.CustomException
 import org.bank.common.exception.ErrorCode
 import org.bank.common.httpClient.CallClient
+import org.bank.common.json.JsonUtil
 import org.bank.config.OAuth2Config
 import org.bank.interfaces.OAuth2TokenResponse
 import org.bank.interfaces.OAuth2UserResponse
@@ -39,10 +43,34 @@ class GoogleAuthService(
         httpClient.POST(tokenURL, headers, body)
         val jsonString = httpClient.POST(tokenURL, headers, body)
 
-        TODO("Not yet implemented")
+        val response: GoogleTokenResponse = JsonUtil.decodeFromJson(jsonString, GoogleTokenResponse.serializer())
+
+        return response;
     }
 
     override fun getUserInfo(accessToken: String): OAuth2UserResponse {
-        TODO("")
+        val headers = mapOf(
+            "Content-Type" to "application/json",
+            "Authorization" to "Bearer $accessToken"
+        )
+
+        val jsonString = httpClient.GET(userInfoURL, headers)
+
+        val response: GoogleUserResponse = JsonUtil.decodeFromJson(jsonString, GoogleUserResponse.serializer())
+
+        return response
     }
 }
+
+@Serializable
+data class GoogleTokenResponse(
+    @SerialName("access_token") override val accessToken: String,
+) : OAuth2TokenResponse
+
+
+@Serializable
+data class GoogleUserResponse(
+    override val id: String,
+    override val email: String,
+    override val name: String,
+) : OAuth2UserResponse
