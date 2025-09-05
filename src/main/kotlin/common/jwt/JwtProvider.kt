@@ -6,15 +6,13 @@ import com.auth0.jwt.exceptions.AlgorithmMismatchException
 import com.auth0.jwt.exceptions.TokenExpiredException
 import com.auth0.jwt.interfaces.DecodedJWT
 import org.bank.common.exception.CustomException
-import org.bank.common.exception.ErrorCode
 import org.bank.common.exception.ErrorCode.TOKEN_IS_EXPIRED
 import org.bank.common.exception.ErrorCode.TOKEN_IS_INVALID
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import java.io.InvalidClassException
-import java.security.InvalidKeyException
 import java.security.SignatureException
-import java.util.Date
+import java.util.*
 
 @Component
 class JwtProvider(
@@ -37,11 +35,11 @@ class JwtProvider(
             return JWT.require(Algorithm.HMAC256(secretKey)).build().verify(token)
         } catch (e: AlgorithmMismatchException) {
             throw CustomException(TOKEN_IS_INVALID, e.message)
-        } catch(e: SignatureException) {
+        } catch (e: SignatureException) {
             throw CustomException(TOKEN_IS_INVALID, e.message)
-        } catch(e: InvalidClassException) {
+        } catch (e: InvalidClassException) {
             throw CustomException(TOKEN_IS_INVALID, e.message)
-        } catch(e: TokenExpiredException) {
+        } catch (e: TokenExpiredException) {
             throw CustomException(TOKEN_IS_EXPIRED, e.message)
         }
     }

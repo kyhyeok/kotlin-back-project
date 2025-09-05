@@ -2,7 +2,6 @@ package org.bank.domains.auth.service
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.builtins.serializer
 import okhttp3.FormBody
 import org.bank.common.exception.CustomException
 import org.bank.common.exception.ErrorCode

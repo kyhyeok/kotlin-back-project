@@ -3,17 +3,20 @@ package org.bank.domains.auth.service
 import org.bank.common.exception.CustomException
 import org.bank.common.exception.ErrorCode
 import org.bank.common.jwt.JwtProvider
+import org.bank.common.logging.Logging
 import org.bank.interfaces.OAuthServiceInterface
+import org.slf4j.Logger
 import org.springframework.stereotype.Service
-import kotlin.text.get
 
 @Service
 class AuthService(
     private val oAuth2Service: Map<String, OAuthServiceInterface>,
-    private val jwtProvider: JwtProvider
+    private val jwtProvider: JwtProvider,
+    private val logger: Logger = Logging.getLogger(AuthService::class.java),
 ) {
-    fun handleAuth(state: String, code: String): String {
+    fun handleAuth(state: String, code: String): String = Logging.logFor(logger) { log ->
         val provider = state.lowercase()
+        log["provider"] = provider
 
         val callService = oAuth2Service[provider] ?: throw CustomException(ErrorCode.PROVIDER_NOT_FOUND)
 
