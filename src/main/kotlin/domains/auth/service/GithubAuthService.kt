@@ -62,7 +62,7 @@ class GithubAuthService(
 
 @Serializable
 data class GithubTokenResponse(
-    @SerialName("sccess_token") override val accessToken: String,
+    @SerialName("access_token") override val accessToken: String,
 ) : OAuth2TokenResponse
 
 @Serializable
