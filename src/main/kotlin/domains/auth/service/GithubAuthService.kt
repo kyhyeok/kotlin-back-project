@@ -1,5 +1,7 @@
 package org.bank.domains.auth.service
 
+import org.bank.common.exception.CustomException
+import org.bank.common.exception.ErrorCode
 import org.bank.config.OAuth2Config
 import org.bank.interfaces.OAuth2TokenResponse
 import org.bank.interfaces.OAuth2UserResponse
@@ -13,7 +15,7 @@ class GithubAuthService(
     private val config: OAuth2Config
 ) : OAuthServiceInterface {
 
-    private val oAuthInfo = config.providers[key] ?: throw TODO("Custom Exception")
+    private val oAuthInfo = config.providers[key] ?: throw CustomException(ErrorCode.AUTH_CONFIG_NOT_FOUND, key)
 
     override val providerName: String = key
 
