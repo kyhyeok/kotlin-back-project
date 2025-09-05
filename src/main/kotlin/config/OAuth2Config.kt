@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration
                 client-id: sample
                 client-secret: <>
                 redirect-uri: <>
-            kakao:
+            github:
                 client-id: sample
                 client-secret: <>
                 redirect-uri: <>
