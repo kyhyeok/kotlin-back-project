@@ -17,7 +17,7 @@ class CallClient(
         val requestBuilder = Request.Builder().url(uri)
         headers.forEach { (key, value) -> requestBuilder.addHeader(key, value) }
         val request = requestBuilder.build()
-        
+
         return resultHandler(httpClient.newCall(request).execute())
     }
 
@@ -25,7 +25,7 @@ class CallClient(
         val requestBuilder = Request.Builder().url(uri).post(body)
         headers.forEach { (key, value) -> requestBuilder.addHeader(key, value) }
         val request = requestBuilder.build()
-        
+
         return resultHandler(httpClient.newCall(request).execute())
     }
 
