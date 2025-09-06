@@ -39,7 +39,6 @@ class GoogleAuthService(
 
         val headers = mapOf("Accept" to "application/json")
 
-        httpClient.POST(tokenURL, headers, body)
         val jsonString = httpClient.POST(tokenURL, headers, body)
 
         val response: GoogleTokenResponse = JsonUtil.decodeFromJson(jsonString, GoogleTokenResponse.serializer())

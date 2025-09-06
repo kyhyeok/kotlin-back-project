@@ -5,6 +5,7 @@ plugins {
     id("io.spring.dependency-management") version "1.0.15.RELEASE"
 
     kotlin("plugin.serialization") version "1.8.0"
+    kotlin("plugin.jpa") version "1.9.22"
 }
 
 group = "org.bank"
@@ -30,8 +31,8 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
     // mongoDB
-    implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
-    implementation("org.jetbrains.kotlin:kotlin-reflect")
+//    implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
+//    implementation("org.jetbrains.kotlin:kotlin-reflect")
 
     // client
     implementation("com.squareup.okhttp3:okhttp:4.12.0")

@@ -24,12 +24,12 @@ class AuthController(
         @RequestParam("state", required = true) state: String,
         response: HttpServletResponse,
     ): ResponseEntity<Map<String, String>> {
-        val token: String = authService.handleAuth(code, state)
+        val token: String = authService.handleAuth(state, code)
 
         response.addCookie(
             Cookie("authToken", token).apply {
                 isHttpOnly = true
-                path = "/callback"
+                path = "/"
                 maxAge = 60 * 60 * 24
             }
         )
