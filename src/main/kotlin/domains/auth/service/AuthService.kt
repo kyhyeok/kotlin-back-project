@@ -4,6 +4,7 @@ import org.bank.common.exception.CustomException
 import org.bank.common.exception.ErrorCode
 import org.bank.common.jwt.JwtProvider
 import org.bank.common.logging.Logging
+import org.bank.common.transaction.Transactional
 import org.bank.interfaces.OAuthServiceInterface
 import org.slf4j.Logger
 import org.springframework.stereotype.Service
@@ -13,6 +14,7 @@ class AuthService(
     private val oAuth2Service: Map<String, OAuthServiceInterface>,
     private val jwtProvider: JwtProvider,
     private val logger: Logger = Logging.getLogger(AuthService::class.java),
+    private val transaction: Transactional
 ) {
     fun handleAuth(state: String, code: String): String = Logging.logFor(logger) { log ->
         val provider = state.lowercase()
