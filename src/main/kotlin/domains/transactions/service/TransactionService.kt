@@ -7,6 +7,7 @@ import org.bank.common.exception.ErrorCode
 import org.bank.common.logging.Logging
 import org.bank.common.transaction.Transactional
 import org.bank.domains.transactions.model.DepositResponse
+import org.bank.domains.transactions.model.TransferResponse
 import org.bank.domains.transactions.repository.TransactionsAccount
 import org.bank.domains.transactions.repository.TransactionsUser
 import org.bank.types.dto.Response
@@ -49,4 +50,49 @@ class TransactionService(
             }
         }
 
+    fun transfer(
+        fromUlid: String,
+        fromAccountUlid: String,
+        toAccountUlid: String,
+        value: BigDecimal
+    ): Response<TransferResponse> =
+        Logging.logFor(logger) { log ->
+            log["fromUlid"] = fromUlid
+            log["fromAccountUlid"] = fromAccountUlid
+            log["toAccountUlid"] = toAccountUlid
+            log["value"] = value
+
+            val key = RedisKeyProvider.bankMutexKey(fromUlid, fromAccountUlid)
+
+            return@logFor redisClient.invokeWithMutex(key) {
+                return@invokeWithMutex transactional.run {
+                    val fromAccount = transactionsAccount.findByUlid(fromAccountUlid)
+                        ?: throw CustomException(ErrorCode.FAILED_TO_FIND_ACCOUNT)
+
+                    if (fromAccount.user.ulid != fromUlid) {
+
+                    } else if (fromAccount.balance < value) {
+
+                    } else if (value <= BigDecimal.ZERO) {
+
+                    }
+
+                    val toAccount = transactionsAccount.findByUlid(toAccountUlid)
+                        ?: throw CustomException(ErrorCode.FAILED_TO_FIND_ACCOUNT)
+
+                    fromAccount.balance = fromAccount.balance.subtract(value)
+                    toAccount.balance = toAccount.balance.add(value)
+
+                    transactionsAccount.save(toAccount)
+                    transactionsAccount.save(fromAccount)
+
+                    ResponseProvider.success(
+                        TransferResponse(
+                            afterFromBalance = fromAccount.balance,
+                            afterToBalance = toAccount.balance
+                        )
+                    )
+                }
+            }
+        }
 }
