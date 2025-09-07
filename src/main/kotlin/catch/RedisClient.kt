@@ -1,11 +1,11 @@
 package org.bank.catch
 
 import org.bank.common.exception.CustomException
-import org.bank.common.exception.ErrorCode
+import org.bank.common.exception.ErrorCode.FAILED_TO_GET_LOCK
 import org.bank.common.exception.ErrorCode.FAILED_TO_MUTEX_INVOKE
 import org.redisson.api.RedissonClient
 import org.springframework.data.redis.core.RedisTemplate
-import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeUnit.SECONDS
 
 class RedisClient(
     private val template: RedisTemplate<String, String>,
@@ -28,14 +28,21 @@ class RedisClient(
 
     fun <T> invokeWithMutex(key: String, function: () -> T?): T? {
         val lock = redissonClient.getLock(key)
-
+        var lockAcquired = false
         try {
-            lock.lock(15, TimeUnit.SECONDS)
-            function.invoke()
+            lockAcquired = lock.tryLock(10, 15, SECONDS)
+
+            if (!lockAcquired) {
+                throw CustomException(FAILED_TO_GET_LOCK, key)
+            }
+
+            return function.invoke()
         } catch (e: Exception) {
-            throw CustomException(FAILED_TO_MUTEX_INVOKE, key)
+            throw CustomException(FAILED_TO_MUTEX_INVOKE, e.message)
         } finally {
-            lock.unlock()
+            if (lockAcquired && lock.isHeldByCurrentThread) {
+                lock.unlock()
+            }
         }
     }
 }
