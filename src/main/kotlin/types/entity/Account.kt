@@ -11,7 +11,6 @@ data class Account (
     @Column(name = "ulid", length = 12, nullable = false)
     val ulid: String,
 
-    // TODO
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_ulid", nullable = false)
     val user: User,
