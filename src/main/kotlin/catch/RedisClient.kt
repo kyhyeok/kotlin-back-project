@@ -5,8 +5,10 @@ import org.bank.common.exception.ErrorCode.FAILED_TO_GET_LOCK
 import org.bank.common.exception.ErrorCode.FAILED_TO_MUTEX_INVOKE
 import org.redisson.api.RedissonClient
 import org.springframework.data.redis.core.RedisTemplate
+import org.springframework.stereotype.Component
 import java.util.concurrent.TimeUnit.SECONDS
 
+@Component
 class RedisClient(
     private val template: RedisTemplate<String, String>,
     private val redissonClient: RedissonClient
