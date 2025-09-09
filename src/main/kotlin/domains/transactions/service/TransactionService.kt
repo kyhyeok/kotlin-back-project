@@ -4,6 +4,7 @@ import org.bank.common.catch.RedisClient
 import org.bank.common.catch.RedisKeyProvider
 import org.bank.common.exception.CustomException
 import org.bank.common.exception.ErrorCode
+import org.bank.common.json.JsonUtil
 import org.bank.common.logging.Logging
 import org.bank.common.message.KafkaProducer
 import org.bank.common.transaction.Transactional
@@ -13,6 +14,7 @@ import org.bank.domains.transactions.repository.TransactionsAccount
 import org.bank.domains.transactions.repository.TransactionsUser
 import org.bank.types.dto.Response
 import org.bank.types.dto.ResponseProvider
+import org.bank.types.message.TransactionMessage
 import org.slf4j.Logger
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
@@ -44,10 +46,21 @@ class TransactionService(
 
                     account.balance = account.balance.add(value)
                     account.updatedAt = LocalDateTime.now()
-
                     transactionsAccount.save(account)
 
-                    producer.sendMessage()
+                    val message = JsonUtil.encodeToJson(
+                        TransactionMessage(
+                            fromUlid = userUlid,
+                            fromName = "0x0",
+                            fromAccountUlid = "0x0",
+                            toUlid = userUlid,
+                            toName = user.username,
+                            toAccountUlid = accountUlid,
+                            value = value,
+                        ), TransactionMessage.serializer()
+                    )
+
+                    producer.sendMessage("", message)
 
                     ResponseProvider.success(DepositResponse(afterBalance = account.balance))
                 }
