@@ -24,4 +24,5 @@ enum class ErrorCode(
     FAILED_TO_GET_LOCK(-112, "failed to get lock"),
     NOT_ENOUGH_VALUE(-113, "not enough value"),
     VALUE_MUST_BE_OVER_ZERO(-114, "value must be over zero"),
+    FAILED_TO_SEND_MESSAGE(-115, "failed to send message"),
 }

@@ -1,10 +1,11 @@
 package org.bank.domains.transactions.service
 
-import org.bank.catch.RedisClient
-import org.bank.catch.RedisKeyProvider
+import org.bank.common.catch.RedisClient
+import org.bank.common.catch.RedisKeyProvider
 import org.bank.common.exception.CustomException
 import org.bank.common.exception.ErrorCode
 import org.bank.common.logging.Logging
+import org.bank.common.message.KafkaProducer
 import org.bank.common.transaction.Transactional
 import org.bank.domains.transactions.model.DepositResponse
 import org.bank.domains.transactions.model.TransferResponse
@@ -21,6 +22,7 @@ import java.time.LocalDateTime
 class TransactionService(
     private val transactionsUser: TransactionsUser,
     private val transactionsAccount: TransactionsAccount,
+    private val producer: KafkaProducer,
     private val redisClient: RedisClient,
     private val transactional: Transactional,
     private val logger: Logger = Logging.getLogger(TransactionsUser::class.java)
@@ -44,6 +46,8 @@ class TransactionService(
                     account.updatedAt = LocalDateTime.now()
 
                     transactionsAccount.save(account)
+
+                    producer.sendMessage()
 
                     ResponseProvider.success(DepositResponse(afterBalance = account.balance))
                 }

@@ -1,4 +1,4 @@
-package org.bank.catch
+package org.bank.common.catch
 
 import org.bank.common.exception.CustomException
 import org.bank.common.exception.ErrorCode.FAILED_TO_GET_LOCK

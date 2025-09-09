@@ -1,4 +1,4 @@
-package org.bank.catch
+package org.bank.common.catch
 
 object RedisKeyProvider {
     private const val BANK_MUTEX_KEY = "bankMutex"
