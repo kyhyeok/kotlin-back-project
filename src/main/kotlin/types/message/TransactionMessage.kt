@@ -3,7 +3,7 @@ package org.bank.types.message
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.bank.common.json.BigDecimalSerializer
-import org.bank.common.json.LocalDateTimeDecimalSerializer
+import org.bank.common.json.LocalDateTimeSerializer
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
@@ -32,6 +32,6 @@ data class TransactionMessage(
     val value: BigDecimal,
 
     @SerialName("time")
-    @Serializable(with = LocalDateTimeDecimalSerializer::class)
-    var time: LocalDateTime = LocalDateTime.now(),
+    @Serializable(with = LocalDateTimeSerializer::class)
+    var time: LocalDateTime = LocalDateTime.now()
 )

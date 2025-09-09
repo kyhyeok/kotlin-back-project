@@ -24,6 +24,8 @@ database:
     host: redis://127.0.0.1:6379
     timeout: 10000
     password : ""
+  mongo:
+    uri: "<TODO>"
   mysql:
     url: jdbc:mysql://localhost:3306/bank?useSSL=false&serverTimezone=UTC
     username: root

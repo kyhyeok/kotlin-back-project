@@ -7,6 +7,7 @@ import org.bank.common.exception.ErrorCode
 import org.bank.common.json.JsonUtil
 import org.bank.common.logging.Logging
 import org.bank.common.message.KafkaProducer
+import org.bank.common.message.Topics
 import org.bank.common.transaction.Transactional
 import org.bank.domains.transactions.model.DepositResponse
 import org.bank.domains.transactions.model.TransferResponse
@@ -19,6 +20,8 @@ import org.slf4j.Logger
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 import java.time.LocalDateTime
+
+
 
 @Service
 class TransactionService(
@@ -60,7 +63,7 @@ class TransactionService(
                         ), TransactionMessage.serializer()
                     )
 
-                    producer.sendMessage("", message)
+                    producer.sendMessage(Topics.Transactions.topic, message)
 
                     ResponseProvider.success(DepositResponse(afterBalance = account.balance))
                 }
@@ -102,6 +105,20 @@ class TransactionService(
 
                     transactionsAccount.save(toAccount)
                     transactionsAccount.save(fromAccount)
+
+                    val message = JsonUtil.encodeToJson(
+                        TransactionMessage(
+                            fromUlid = fromUlid,
+                            fromName = fromAccount.user.username,
+                            fromAccountUlid = fromAccountUlid,
+                            toUlid = toAccount.user.ulid,
+                            toName = toAccount.user.username,
+                            toAccountUlid = toAccountUlid,
+                            value = value,
+                        ), TransactionMessage.serializer()
+                    )
+
+                    producer.sendMessage(Topics.Transactions.topic, message)
 
                     ResponseProvider.success(
                         TransferResponse(

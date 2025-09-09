@@ -22,12 +22,12 @@ class RedisConfig {
     @Bean
     fun redisConnectionFactory(
         @Value("\${database.redis.host}") host: String,
-        @Value("\${database.redis.port}") post: Int,
-        @Value("\${database.redis.password:${null}}") password: String?,
+        @Value("\${database.redis.port}") port: Int,
+        @Value("\${database.redis.password:}") password: String?,
         @Value("\${database.redis.database:${0}}") database: Int,
-        @Value("\${database.redis.timeout:${10_000}}") timeout: Long,
-    ): LettuceConnectionFactory {
-        val config = RedisStandaloneConfiguration(host, post).apply {
+        @Value("\${database.redis.timeout:${10000}}") timeout: Long,
+    ) : LettuceConnectionFactory {
+        val config = RedisStandaloneConfiguration(host, port).apply {
             password?.let { setPassword(it) }
             setDatabase(database)
         }
@@ -36,12 +36,12 @@ class RedisConfig {
             .commandTimeout(Duration.ofSeconds(timeout))
             .build()
 
-        return LettuceConnectionFactory(config, clientConfig)
+        return LettuceConnectionFactory(config,clientConfig)
     }
 
     @Bean
     @Primary
-    fun redisTemplate(connectionFactory: RedisConnectionFactory): RedisTemplate<String, String> {
+    fun redisTemplate(connectionFactory : RedisConnectionFactory): RedisTemplate<String, String> {
         val template = RedisTemplate<String, String>()
 
         template.connectionFactory = connectionFactory
@@ -54,12 +54,13 @@ class RedisConfig {
         return template
     }
 
+
     @Bean
     fun redissonClient(
         @Value("\${database.redisson.host}") host: String,
         @Value("\${database.redisson.timeout}") timeout: Int,
         @Value("\${database.redisson.password:${null}}") password: String?,
-    ): RedissonClient {
+    ) : RedissonClient {
         val config = Config()
 
         val singleServerConfig = config.useSingleServer()
@@ -74,4 +75,6 @@ class RedisConfig {
             println("redisson create success")
         }
     }
+
+
 }

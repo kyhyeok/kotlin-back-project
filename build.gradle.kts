@@ -31,8 +31,8 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
     // mongoDB
-//    implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
-//    implementation("org.jetbrains.kotlin:kotlin-reflect")
+    implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
+    implementation("org.jetbrains.kotlin:kotlin-reflect")
 
     // client
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
