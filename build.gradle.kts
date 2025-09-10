@@ -16,10 +16,13 @@ repositories {
 }
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-web:3.2.3")
+    implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-validation:3.2.3")
     implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+
+    // security
+    implementation("org.springframework.boot:spring-boot-starter-security:3.2.3")
 
     // jwt
     implementation("com.auth0:java-jwt:3.12.0")

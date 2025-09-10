@@ -16,8 +16,10 @@ import org.springframework.web.filter.OncePerRequestFilter
 @ComponentScan
 class JWTFilter(
     private val jwtProvider: JwtProvider,
-    private val pathMatcher: AntPathMatcher,
 ) : OncePerRequestFilter() {
+
+    private val pathMatcher = AntPathMatcher()
+
     private val JWT_AUTH_ENDPOINT = arrayOf(
         "/api/v1/bank/**",
         "/api/v1/history/**"
