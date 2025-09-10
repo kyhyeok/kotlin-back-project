@@ -8,7 +8,7 @@ object RedisKeyProvider {
         return "$BANK_MUTEX_KEY:$ulid:$accountUlid"
     }
 
-    fun historyCatchKey(ulid: String, accountUlid: String): String {
-        return "$HISTORY_CATCH_KEY:$ulid:$accountUlid"
+    fun historyCatchKey(ulid: String): String {
+        return "$HISTORY_CATCH_KEY:$ulid"
     }
 }
